@@ -2,7 +2,7 @@
 
 ## JavaScript API client for the Screeps World server
 
-[![npm](https://nodei.co/npm/screeps-api.png "NPM")](https://npmjs.com/package/screeps-api)
+[![npm](https://nodei.co/npm/@screepts/screeps-api.png "NPM")](https://npmjs.com/package/@screepts/screeps-api)
 
 ## CLI Usage
 
