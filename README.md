@@ -2,11 +2,6 @@
 
 ## JavaScript API client for the Screeps World server
 
-[![License](https://img.shields.io/npm/l/screeps-api.svg)](https://npmjs.com/package/screeps-api)
-[![Version](https://img.shields.io/npm/v/screeps-api.svg)](https://npmjs.com/package/screeps-api)
-[![Downloads](https://img.shields.io/npm/dw/screeps-api.svg)](https://npmjs.com/package/screeps-api)
-[![CircleCI](https://circleci.com/gh/screepers/node-screeps-api/tree/master.svg?style=shield)](https://circleci.com/gh/screepers/node-screeps-api/tree/master)
-
 [![npm](https://nodei.co/npm/screeps-api.png "NPM")](https://npmjs.com/package/screeps-api)
 
 ## CLI Usage
