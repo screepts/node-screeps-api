@@ -1,8 +1,9 @@
 # Web sockets endpoints list
 
 Currently known endpoints are listed below.
- * This list is clearly not exhaustive and comes from empirical observations.
- * If you want to add more data, feel free to make a pull request.
+
+- This list is clearly not exhaustive and comes from empirical observations.
+- If you want to add more data, feel free to make a pull request.
 
 ## Shards
 
@@ -13,36 +14,36 @@ Note that adding a shard to a server not expecting it may cause an error.
 
 ## Subscribing to web sockets endpoints
 
- * Make sure you are authenticated (you should have called `api.auth(...).then(...)` first).
- * Connect the socket and wait for connection establishment using `api.socket.connect().then(...)`.
- * You can then subscribe to different endpoints using `api.socket.subscribe()`.
- * The server will then send periodic events with requested information.
+- Make sure you are authenticated (you should have called `api.auth(...).then(...)` first).
+- Connect the socket and wait for connection establishment using `api.socket.connect().then(...)`.
+- You can then subscribe to different endpoints using `api.socket.subscribe()`.
+- The server will then send periodic events with requested information.
 
 Complete example:
+
 ```javascript
-const { ScreepsAPI } = require('screeps-api');
+const { ScreepsAPI } = require("screeps-api")
 
 try {
-	// Setup
-    const api = new ScreepsAPI();
-    await api.auth("your_email", "your_password"); // authenticate
-    await api.socket.connect(); // connect socket
+  // Setup
+  const api = new ScreepsAPI()
+  await api.auth("your_email", "your_password") // authenticate
+  await api.socket.connect() // connect socket
 
-    // Subscribe to 'cpu' endpoint and get events
-    api.socket.subscribe('cpu');
-    api.socket.on('cpu', event => {
-        console.log(event.data.cpu) // cpu used last tick
-    });
+  // Subscribe to 'cpu' endpoint and get events
+  api.socket.subscribe("cpu")
+  api.socket.on("cpu", (event) => {
+    console.log(event.data.cpu) // cpu used last tick
+  })
 
-    // You can also put a callback to subscribe()
-    api.socket.subscribe('console', event => {
-        event.data.messages.log // List of console.log output for tick
-    })
-} catch(err) {
-	console.log(err);
+  // You can also put a callback to subscribe()
+  api.socket.subscribe("console", (event) => {
+    event.data.messages.log // List of console.log output for tick
+  })
+} catch (err) {
+  console.log(err)
 }
 ```
-
 
 ## code
 
@@ -52,19 +53,20 @@ Once subscribed, the server will send a new event with full code base every time
 
 ### Parameters of `event.data`:
 
-Name      | Type   | Description
---------- | ------ | ------------------
-branch    | String | Name of the updated branch
-modules   | Object | Map of files (using file name as key and file content as value)
-timestamp | Number | Date of the modification expressed as the number of milli-seconds since 01/01/1970
-hash      | Number | Some kind of hash, I guess ? (don't ask me how to compute it #FIXME)
+| Name      | Type   | Description                                                                        |
+| --------- | ------ | ---------------------------------------------------------------------------------- |
+| branch    | String | Name of the updated branch                                                         |
+| modules   | Object | Map of files (using file name as key and file content as value)                    |
+| timestamp | Number | Date of the modification expressed as the number of milli-seconds since 01/01/1970 |
+| hash      | Number | Some kind of hash, I guess ? (don't ask me how to compute it #FIXME)               |
 
 ### Example:
 
 ```javascript
 // Subscription
-api.socket.subscribe('code', event => console.log(JSON.stringify(event.data)));
+api.socket.subscribe("code", (event) => console.log(JSON.stringify(event.data)))
 ```
+
 ```javascript
 // Results
 {
@@ -78,7 +80,6 @@ api.socket.subscribe('code', event => console.log(JSON.stringify(event.data)));
 }
 ```
 
-
 ## console
 
 ### Description:
@@ -87,17 +88,18 @@ Once subscribed, the server will send a new event every tick with console logs a
 
 ### Parameters of `event.data`:
 
-Name             | Type   | Description
----------------- | ------ | ------------------
-messages.log     | Array  | Lines shown in console (like if printed by `console.log()`)
-messages.results | Array  | Array of command results
+| Name             | Type  | Description                                                 |
+| ---------------- | ----- | ----------------------------------------------------------- |
+| messages.log     | Array | Lines shown in console (like if printed by `console.log()`) |
+| messages.results | Array | Array of command results                                    |
 
 ### Example:
 
 ```javascript
 // Subscription
-api.socket.subscribe('console', event => console.log(JSON.stringify(event.data)));
+api.socket.subscribe("console", (event) => console.log(JSON.stringify(event.data)))
 ```
+
 ```javascript
 // Results after executing `Game.time` in game:
 {
@@ -109,7 +111,6 @@ api.socket.subscribe('console', event => console.log(JSON.stringify(event.data))
 // (`Game.time` does not show any log in the console, which is why `messages.log` is empty)
 ```
 
-
 ## cpu
 
 ### Description:
@@ -118,17 +119,18 @@ Once subscribed, the server will send a new event every tick with cpu and memory
 
 ### Parameters of `event.data`:
 
-Name   | Type   | Description
------- | ------ | ------------------
-cpu    | Number | Cpu used last tick
-memory | Number | Current memory usage
+| Name   | Type   | Description          |
+| ------ | ------ | -------------------- |
+| cpu    | Number | Cpu used last tick   |
+| memory | Number | Current memory usage |
 
 ### Example:
 
 ```javascript
 // Subscription
-api.socket.subscribe('cpu', event => console.log(JSON.stringify(event.data)));
+api.socket.subscribe("cpu", (event) => console.log(JSON.stringify(event.data)))
 ```
+
 ```javascript
 // Results every tick
 {
@@ -136,7 +138,6 @@ api.socket.subscribe('cpu', event => console.log(JSON.stringify(event.data)));
     "memory": 126435
 }
 ```
-
 
 ## room:ROOM_NAME
 
@@ -150,20 +151,21 @@ Subsequent events only return the modified properties.
 
 ### Parameters of `event.data`:
 
-Name     | Type   | Description
--------- | ------ | ---------------------------------
-objects  | Object | Map of RoomObjects indexed by id
-gameTime | Number | Current game tick
-info     | Object | Contains game mode (usually `"world"`)
-visual   | Object | Room visuals (contents currently unknown #FIXME)
+| Name     | Type   | Description                                      |
+| -------- | ------ | ------------------------------------------------ |
+| objects  | Object | Map of RoomObjects indexed by id                 |
+| gameTime | Number | Current game tick                                |
+| info     | Object | Contains game mode (usually `"world"`)           |
+| visual   | Object | Room visuals (contents currently unknown #FIXME) |
 
 ### Example:
 
 ```javascript
 // Subscription
-api.socket.subscribe('room:W7N7', event => console.log(JSON.stringify(event.data))); // For non-sharded servers
-api.socket.subscribe('room:shard0/W7N7', event => console.log(JSON.stringify(event.data))); // For sharded servers
+api.socket.subscribe("room:W7N7", (event) => console.log(JSON.stringify(event.data))) // For non-sharded servers
+api.socket.subscribe("room:shard0/W7N7", (event) => console.log(JSON.stringify(event.data))) // For sharded servers
 ```
+
 ```javascript
 // First event results:
 {
@@ -196,6 +198,7 @@ api.socket.subscribe('room:shard0/W7N7', event => console.log(JSON.stringify(eve
     "visual": ""
 }
 ```
+
 ```javascript
 // Results for subsequent events:
 {

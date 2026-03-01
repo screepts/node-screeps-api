@@ -1,5 +1,5 @@
-*.sublime-*
 node_modules
-auth.js
 dist
-npm-debug.log
+*.log
+.DS_Store
+.env*

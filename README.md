@@ -1,24 +1,17 @@
 # Screeps API
 
-## This is a nodejs API for the game Screeps
+## JavaScript API client for the Screeps World server
 
-[![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 [![License](https://img.shields.io/npm/l/screeps-api.svg)](https://npmjs.com/package/screeps-api)
 [![Version](https://img.shields.io/npm/v/screeps-api.svg)](https://npmjs.com/package/screeps-api)
 [![Downloads](https://img.shields.io/npm/dw/screeps-api.svg)](https://npmjs.com/package/screeps-api)
 [![CircleCI](https://circleci.com/gh/screepers/node-screeps-api/tree/master.svg?style=shield)](https://circleci.com/gh/screepers/node-screeps-api/tree/master)
 
-![npm](https://nodei.co/npm/screeps-api.png "NPM")
-
-## Notice on authentication
-
-As of 12/29/2017 Screeps now uses auth tokens obtained via your screeps account settings. 
-User/pass auth will stop working February 1, 2018!
-[Screeps Announcement](http://blog.screeps.com/2017/12/auth-tokens/)
+[![npm](https://nodei.co/npm/screeps-api.png "NPM")](https://npmjs.com/package/screeps-api)
 
 ## CLI Usage
 
-As of 1.7.0, a small CLI program (`screeps-api`) is included. 
+As of 1.7.0, a small CLI program (`screeps-api`) is included.
 
 Server config is specified via a `.screeps.yml` file conforming to the [Unified Credentials File format](https://github.com/screepers/screepers-standards/blob/master/SS3-Unified_Credentials_File.md)
 
@@ -42,7 +35,6 @@ screeps-api
     upload [options] <files...>  Upload code
 
 ```
-
 
 ## API Usage
 
@@ -148,6 +140,7 @@ api.socket.subscribe('memory/rooms.E0N0',(event)=>{
 ## Endpoint documentation
 
 Server endpoints are listed in the `docs` folder:
- * [Endpoints.md](/docs/Endpoints.md) for direct access
- * [Websocket_endpoints.md](/docs/Websocket_endpoints.md) for web socket endpoints
-Those lists are currently not exhaustive.
+
+- [Endpoints.md](/docs/Endpoints.md) for direct access
+- [Websocket_endpoints.md](/docs/Websocket_endpoints.md) for web socket endpoints
+  Those lists are currently not exhaustive.
