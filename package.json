@@ -1,6 +1,6 @@
 {
   "name": "@screepts/screeps-api",
-  "version": "2.0.0",
+  "version": "1.0.0",
   "description": "A JavaScript API client for the Screeps World server",
   "license": "ISC",
   "author": "Adam Shumann",
