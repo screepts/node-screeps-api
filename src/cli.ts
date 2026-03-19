@@ -45,7 +45,7 @@ async function run() {
           console.log("Invalid cmd")
           return
         }
-        out(fn.apply(api, args))
+        await out(fn.apply(api, args))
       } catch (e) {
         console.error(e)
       }
@@ -66,13 +66,13 @@ async function run() {
           }
           const data = await readFile(opts.set, "utf8")
           await api.memory.set(fpath, data, opts.shard)
-          out("Memory written")
+          await out("Memory written")
         } else {
           const data = await api.memory.get(fpath, opts.shard)
           if (opts.file) {
             await writeFile(opts.file, data)
           } else {
-            out(data)
+            await out(data)
           }
         }
       } catch (e) {
@@ -94,7 +94,7 @@ async function run() {
         if (opts.set) {
           const data = await readFile(opts.set, "utf8")
           await api.memory.segment.set(segment, data, opts.shard)
-          out("Segment Set")
+          await out("Segment Set")
         } else {
           if (segment === "all") segment = Array.from({ length: 100 }, (v, k) => k).join(",")
           const { data } = await api.memory.segment.get(segment, opts.shard)
@@ -108,9 +108,9 @@ async function run() {
             } else {
               await writeFile(join(dir, `segment_${segment}`), data)
             }
-            out("Segments Saved")
+            await out("Segments Saved")
           } else {
-            out(segments)
+            await out(segments)
           }
         }
       } catch (e) {
@@ -140,7 +140,7 @@ async function run() {
             }),
           )
         } else {
-          out(modules)
+          await out(modules)
         }
       } catch (e) {
         console.error(e)
@@ -170,7 +170,7 @@ async function run() {
           )
         }
         await Promise.all(ps)
-        out(api.code.set(opts.branch, modules))
+        await out(api.code.set(opts.branch, modules))
       } catch (e) {
         console.error(e)
       }

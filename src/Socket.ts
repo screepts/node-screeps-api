@@ -110,7 +110,7 @@ export class Socket extends EventEmitter<
       this.ws.addEventListener("error", (err) => {
         this.ws?.close()
         this.emit("error", err)
-        debug(`error ${err}`)
+        debug(`error ${err.error || err}`)
         if (!this.connected) {
           reject(err)
         }
@@ -198,7 +198,7 @@ export class Socket extends EventEmitter<
   }
 
   async gzip(bool: boolean) {
-    this.send(`gzip ${bool ? "on" : "off"}`)
+    await this.send(`gzip ${bool ? "on" : "off"}`)
   }
 
   async send(data: string) {
@@ -209,24 +209,23 @@ export class Socket extends EventEmitter<
     }
   }
 
-  auth(token: string) {
-    return new Promise<void>((resolve, reject) => {
-      this.send(`auth ${token}`)
-      this.once("auth", (ev) => {
-        const { data } = ev
-        if (data.status === "ok") {
-          this.authed = true
-          this.emit("token", data.token)
-          this.emit("authed")
-          while (this.__subQueue.length) {
-            this.send(this.__subQueue.shift()!)
-          }
-          resolve()
-        } else {
-          reject(new Error("socket auth failed"))
-        }
-      })
-    })
+  async auth(token: string) {
+    const waitAuth = new Promise<{
+      data: {
+        status: string
+        token: string
+      }
+    }>((resolve) => this.once("auth", resolve))
+    await this.send(`auth ${token}`)
+    const { data } = await waitAuth
+    if (data.status !== "ok") throw new Error("socket auth failed")
+
+    this.authed = true
+    this.emit("token", data.token)
+    this.emit("authed")
+    while (this.__subQueue.length) {
+      await this.send(this.__subQueue.shift()!)
+    }
   }
 
   async subscribe(path: string, cb?: (...args: any[]) => void) {
@@ -236,7 +235,7 @@ export class Socket extends EventEmitter<
       path = `user:${userID}/${path}`
     }
     if (this.authed) {
-      this.send(`subscribe ${path}`)
+      await this.send(`subscribe ${path}`)
     } else {
       this.__subQueue.push(`subscribe ${path}`)
     }
@@ -252,7 +251,7 @@ export class Socket extends EventEmitter<
     if (!path.match(/^(\w+):(.+?)$/)) {
       path = `user:${userID}/${path}`
     }
-    this.send(`unsubscribe ${path}`)
+    await this.send(`unsubscribe ${path}`)
     this.emit("unsubscribe", path)
     if (this.__subs[path]) this.__subs[path]--
   }
