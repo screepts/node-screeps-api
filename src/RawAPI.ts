@@ -10,7 +10,7 @@ const DEFAULT_SHARD = "shard0"
 const OFFICIAL_HISTORY_INTERVAL = 100
 const PRIVATE_HISTORY_INTERVAL = 20
 
-const sleep = (ms: number) => new Promise((resolve) => setInterval(resolve, ms))
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
 const mapToShard = <T>(res: T & { list?: any; rooms?: any; shards?: any }) => {
   if (!res.shards) {
