@@ -872,7 +872,7 @@ export class RawAPI extends EventEmitter<{
   }
 
   async req(method: string, path: string, body: any = {}): UndocumentedRes {
-    let url = new URL(path, this.opts.url)
+    let url = new URL(this.opts.pathname + path, this.opts.url)
     const opts: RequestInit & { headers: HeaderRecord } = {
       method,
       headers: {},
