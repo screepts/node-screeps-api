@@ -21,6 +21,12 @@ const mapToShard = <T>(res: T & { list?: any; rooms?: any; shards?: any }) => {
   return res
 }
 
+const appendPath = (base: string, path: string) => {
+  base = base.endsWith("/") ? base : base + "/"
+  path = path.startsWith("/") ? path.slice(1) : path
+  return new URL(path, base)
+}
+
 interface RawOpts extends URL {
   url: string | URL
   path: string
@@ -101,7 +107,10 @@ export class RawAPI extends EventEmitter<{
     }> => {
       if (this.isOfficialServer()) {
         tick -= tick % OFFICIAL_HISTORY_INTERVAL
-        return this.req("GET", `/room-history/${shard}/${room}/${tick}.json`)
+        // season history ignore path opts (/room-history/seasonShard instead of /season/room-history/seasonShard)
+        const url = new URL(this.opts.url)
+        url.pathname = `/room-history/${shard}/${room}/${tick}.json`
+        return this.req("GET", url)
       } else {
         tick -= tick % PRIVATE_HISTORY_INTERVAL
         return this.req("GET", "/room-history", { room, time: tick })
@@ -871,8 +880,9 @@ export class RawAPI extends EventEmitter<{
     return res
   }
 
-  async req(method: string, path: string, body: any = {}): UndocumentedRes {
-    let url = new URL(this.opts.pathname + path, this.opts.url)
+  async req(method: string, path: string | URL, body: any = {}): UndocumentedRes {
+    const url = path instanceof URL ? path : appendPath(this.opts.url, path)
+    path = path instanceof URL ? path.pathname : path
     const opts: RequestInit & { headers: HeaderRecord } = {
       method,
       headers: {},
@@ -938,7 +948,7 @@ export class RawAPI extends EventEmitter<{
         if (this.__authed && this.opts.email && this.opts.password) {
           this.__authed = false
           await this.auth(this.opts.email, this.opts.password)
-          return this.req(method, path, body)
+          return this.req(method, url, body)
         } else {
           throw new Error("Not Authorized")
         }
@@ -948,7 +958,7 @@ export class RawAPI extends EventEmitter<{
         this.opts.experimentalRetry429
       ) {
         await sleep(Math.floor(Math.random() * 500) + 200)
-        return this.req(method, path, body)
+        return this.req(method, url, body)
       }
       throw new Error(res.statusText, { cause: res })
     }
